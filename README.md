@@ -2,7 +2,7 @@
 
 <h1>📈 Health Insurance Cross-Sell — Projeto End-to-End de Ciência de Dados</h1>
 
-<p>Solução de <strong>Machine Learning</strong> para priorização de clientes com maior propensão a contratar um seguro veicular adicional (cross-sell), construída a partir de um pipeline completo de Ciência de Dados com foco em valor de negócio, eficiência operacional e deploy em produção.</p>
+<p>Solução de <strong>Machine Learning</strong> para priorização de clientes com maior propensão a contratar um seguro veicular adicional (cross-sell), construída a partir de um pipeline completo de Ciência de Dados com foco em valor de negócio, eficiência operacional e deploy.</p>
 
 <h2>🎯 Problema de Negócio</h2>
 <p>O Head de Vendas de uma seguradora identificou que a empresa apresentava uma <strong>baixa taxa de conversão</strong> em campanhas de cross-sell de seguro veicular, além de um <strong>alto custo operacional</strong> associado às ligações realizadas pelo time comercial.</p>
@@ -39,7 +39,7 @@
   <li>Modelagem (Baseline → Modelos Avançados)</li>
   <li>Fine-Tuning com Optuna</li>
   <li>Avaliação com Métricas de Negócio</li>
-  <li>Deploy em Produção</li>
+  <li>Deploy</li>
 </ul>
 
 <h2>📈 Resultados</h2>
@@ -177,16 +177,16 @@ Dois canais de venda (<code>policy_channel</code>) concentram a maior parte das 
 <img src="img/policy_channel_vs_response.png" alt="Canal de Venda vs Resposta" />
 <hr/>
 
-<h2>🚀 Produto de Dados em Produção</h2>
+<h2>🚀 Produto de Dados (deploy)</h2>
 
 <p>
-O modelo é consumido via uma <strong>API</strong> integrada ao <strong>Google Sheets</strong>, permitindo que o time comercial utilize as previsões diretamente em uma interface familiar, sem necessidade de ferramentas técnicas adicionais.
+O modelo é consumido via uma <strong>API</strong> integrada ao <strong>Google Sheets</strong>, pensado para que o time comercial use as previsões diretamente em uma interface familiar, sem necessidade de ferramentas técnicas adicionais.
 </p>
 
 <p>O fluxo operacional é:</p>
 
 <ol>
-  <li>Upload do CSV com dados de clientes em produção.</li>
+  <li>Upload do CSV com dados de clientes novos.</li>
   <li>Clique em um botão para gerar previsões.</li>
   <li>Retorno de duas colunas adicionais na planilha:</li>
   <ul>
@@ -196,7 +196,7 @@ O modelo é consumido via uma <strong>API</strong> integrada ao <strong>Google S
 </ol>
 
 <p>
-A planilha em produção pode ser acessada pelo link abaixo:
+A planilha de demonstração pode ser acessada pelo link abaixo:
 <br>
 <a href="https://docs.google.com/spreadsheets/d/1Dts6nD_rmfh2Cv-5oA4mrzZ-9kNECVs6d7qX4UYfO8k/edit?usp=sharing" target="_blank">
 Google Sheets
@@ -215,23 +215,16 @@ Health Insurance API
 
 <p>
 <em>
-Observação: a ordenação exibida na planilha já evidencia padrões compatíveis com os insights de modelagem, como a forte influência das variáveis <strong>previously_insured</strong> e <strong>driver_license</strong>, o que reforça empiricamente o risco de leakage discutido na seção seguinte.
+Observação: a ordenação exibida na planilha já evidencia padrões compatíveis com os insights de modelagem, como a forte influência da variável <strong>previously_insured</strong>, discutida na seção seguinte.
 </em>
 </p>
 
-<h2>⚠️ Risco de Leakage</h2>
+<h2>⚠️ Variável dominante: previously_insured</h2>
 <p>
-Duas variáveis apresentam forte indício de vazamento de informação (data leakage) e impactam diretamente a ordenação exibida no produto em produção:
-</p>
-<ul>
-  <li><strong>previously_insured</strong>: 99,91% dos clientes que já possuem seguro veicular não demonstram interesse em adquirir outro.</li>
-  <li><strong>driver_license</strong>: 87,73% dos clientes que possuem carteira de motorista não demonstram interesse no seguro ofertado.</li>
-</ul>
-<p>
-Essas variáveis praticamente definem a resposta do modelo. Isso pode ser observado diretamente na planilha de produção, onde os clientes com maior rank apresentam <code>previously_insured = 0</code> e <code>driver_license = 1</code>.
+99,91% dos clientes que já têm seguro veicular não têm interesse no novo seguro. Não é vazamento de dados, porque a informação é conhecida antes da oferta, mas o ranking depende muito dela: na prática, o modelo separa primeiro quem já tem seguro e só depois ordena o resto. Isso aparece na planilha de demonstração, onde os clientes com maior rank têm <code>previously_insured = 0</code>.
 </p>
 <p>
-Em um ambiente real, essas features deveriam ser cuidadosamente reavaliadas ou removidas para evitar overfitting e falsas expectativas de performance.
+Vale testar o modelo sem essa variável para medir quanto do lift vem dela.
 </p>
 
 <h2>🛠️ Stack Tecnológica</h2>
@@ -250,5 +243,5 @@ Este projeto demonstra como modelos de Machine Learning podem ser traduzidos em 
 </p>
 
 <p>
-Mais do que maximizar métricas tradicionais, o foco foi em gerar <strong>uplift real</strong> sobre uma estratégia aleatória, respeitando restrições práticas como custo operacional e capacidade do time comercial.
+Mais do que maximizar métricas tradicionais, o foco foi em gerar <strong>ganho real</strong> sobre uma estratégia aleatória, respeitando restrições práticas como custo operacional e capacidade do time comercial.
 </p>
